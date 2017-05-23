@@ -16,5 +16,11 @@ clf.fit(x,y)
 
 
 #asking the classifier what label it thinks the point belongs to
-print(clf.predict([[-0.8,-1]]))
+pred = clf.predict([[-0.8,-1]])
+'''
+#if i wanted to compute the accuracy score and had a labels test set (test set of y)
+from sklearn.metrics import accuracy_score
+
+print(accuracy_score(pred,y_TEST_SET))
+'''
 
