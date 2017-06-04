@@ -1,0 +1,208 @@
+1. Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it.
+As part of your answer, give some background on the dataset and how it can be used to answer the project question.
+ Were there any outliers in the data when you got it, and how did you handle those?
+ [relevant rubric items: ?data exploration?, ?outlier investigation?]
+
+1.
+    The goal of the project was to be able to predict and determine who was a person of interest ("POI") based on the other attributes
+of the dataset. The data is centered around the employees of the Enron Corporation, whose executives were convicted of several crimes
+including fraud, insider trading, and conspiracy. Since, the dataset consists of over 21 features, there were a wide array
+of factors that could contribute to whether a person was a person of interest in the investigation of the company. By looking
+at the factors of the 146 entries in the dataset and using machine learning we were able to determine who was most likely a
+person of interest. To measure how well the machine learning algorithm performs, we are using metrics that include
+accuracy, precision, recall, and f1 score. The goal for this project is that our recall and precision are above the
+0.3 threshold.
+    Originally, I plotted the data using pyplot in order to determine if there was any outliers. I started by plotting
+    the salary versus the bonus of the 146 entries in the dataset to determine if there were any outliers. I noticed that
+    there was a significant outlier that ended up being the total of all the other entries in the dataset. I also noticed
+    that there was another outlier in the dataset which was "THE TRAVEL AGENCY IN THE PARK". I concluded that this entry
+    was an additional outlier because of the large amount of the values in the dataset that had "NaN" values. I took care
+    of both of these outliers by removing them from the dataset. There are in total 18 'poi' in the dataset.
+
+
+
+2 . What features did you end up using in your POI identifier, and what selection process did you use to pick them?
+Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own
+feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it.
+ (You do not necessarily have to use it in the final analysis, only engineer and test it.)
+
+2. The features I ended up using for the project were 'poi','total_poi_messages','restricted_stock','salary','restricted_stock_deferred'
+,'exercised_stock_options', and 'bonus'. Of the features in this list,  'total_poi_messages' was the only feature that I used
+    in my final selection that I created myself. I did experiment with two other features that I crated being 'stock_sum'
+    and 'total_comp'. The 'stock_sum' feature is the sum of the 'restricted_stock_deferred',
+    'total_stock_value','exercised_stock_options', and 'restricted_stock' option. The 'total_poi_messages' feature is
+    the sum of 'from_poi_to_this_person', 'from_this_person_to_poi', and 'shared_receipt_with_poi'. In order to determine what
+    features would be best I tried utilizing several machine learning techniques.
+    I used sklearn's decision tree library and the 'tree.features_importance' in order to determine
+    what variables to use, using the gini indexes as a result. I also used the SelectKBest method and their pvalues to
+    determine what features were important to the dataset. The 'total_comp' feature was created because of the signifigance
+    of the salary and bonus feature. I also hypothesized that these two features would play a pivotal role as key players
+    of the Enron corporation had significant salaries and significant bonuses.  The 'total_stock' feature was created in
+    order to look at all the features related to the stock options of the Enron corporation. There is a strong
+    and significant positive correlation between employees who have a large number of stock options and being a
+    person of interest. The final feature that I used was the 'total_poi_messages'.Of all the features,
+    this feature was one of the most significant and therefore included it in my final analysis. Also, I considered
+    putting 'stock_sum' in my final analysis but didn't because it included four features and felt that those features
+    would be better represented on their own.       ""
+    For Feature Selection, I also used Kbest and my results were on both the entirety of the features.
+   Originally, I just used the Kbest p_values results and those were:
+
+('sorted Values Index', OrderedDict
+([(0.99999999999999989, 'poi'),
+(0.16300293309210756, 'total_payments'),
+(0.024648634821081206, 'total_stock_value'),
+(0.00045449737664881082, 'restricted_stock_deferred'),
+(0.00013589288842389143, 'to_messages'),
+(4.601102141312259e-09, 'from_this_person_to_poi'),
+(1.6351330512029919e-19, 'bonus'),
+(5.2506730112115875e-22, 'salary'),
+(2.60585501911369e-22, 'restricted_stock'),
+(3.4354584929655013e-23, 'deferral_payments'),
+(3.4563906800272398e-29, 'long_term_incentive'),
+(4.3290241724263304e-31, 'deferred_income'),
+(1.3520297460916852e-34, 'loan_advances'),
+(1.2535767106526502e-47, 'other'),
+(6.0042318515345173e-49, 'director_fees'),
+(2.123863368674466e-59, 'exercised_stock_options'),
+(8.6978869922977405e-69, 'from_messages'),
+(0.0, 'expenses')]))
+
+As you can see, the top of the list includes a lot of the items that I decided to use in my features_list. After 'restricted
+stock', I felt that the items had a very low p_value with a high amount of "NaN" values and decided against using them in my
+feature_list.
+
+ I then decided to take those Kbest.pvalues and did log10 times negative one for the set in order to get
+ more understable numbers:
+ ('sorted Values Index', OrderedDict
+ ([(inf, 'expenses'),
+ (68.06058623922533, 'from_messages'),
+ (58.672873425509287, 'exercised_stock_options'),
+ (48.221542545959423, 'director_fees'),
+ (46.901849084925708, 'other'),
+ (33.869013753348995, 'loan_advances'),
+ (30.363609989164424, 'deferred_income'),
+ (28.461377174587053, 'long_term_incentive'),
+ (22.46401529421518, 'deferral_payments'),
+ (21.584049750615158, 'restricted_stock'),
+ (21.279785026818299, 'salary'),
+ (18.786446902910559, 'bonus'),
+ (8.3371381255885169, 'from_this_person_to_poi'),
+ (3.8668032702658479, 'to_messages'),
+ (3.3424686191752011, 'restricted_stock_deferred'),
+ (1.6082071293721349, 'total_stock_value'),
+ (0.78780458078465276, 'total_payments'),
+ (4.821637332766436e-17, 'poi')]))
+ The problem with some of these features is that they have a very high amount of "NaN" values for their entries.
+ I tried to stay away from those features as a result and wanted to use features that were significant but also had a low
+ amount of "NaN" features.
+
+
+
+
+ 3. In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use,
+ and if you used an automated feature selection function like SelectKBest,
+ please report the feature scores and reasons for your choice of parameter values.
+ [relevant rubric items: ?create new features?, ?properly scale features?, ?intelligently select feature?]
+
+3. What algorithm did you end up using? What other one(s) did you try?
+How did model performance differ between algorithms?  [relevant rubric item: ?pick an algorithm?]
+
+
+3. In the end, I ended up using a Kneighbors algorithm with a parameter of n_neighbors equaling 3. I also used the svm and sklearn's svc
+package but the results were less favorable. In addition, I also used the gaussian naive bayes method that was originally provided
+but found that it was one of the least favorable of all the ones that I attempted. The SVC algorithm also took a bit longer
+to run, where as the Kneighbors alorithm was relatively fast. The results of my KNeighborsClassifier according to the supplied
+'tester.py' file is
+        "Pipeline(steps=[('anova', SelectKBest(k='all', score_func=<function f_classif at 0x10d3bf050>)), ('kn', KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+        metric_params=None, n_jobs=1, n_neighbors=3, p=2,
+        weights='distance'))])
+        Accuracy: 0.86686       Precision: 0.54920      Recall: 0.37950 F1: 0.44885     F2: 0.40450
+        Total predictions: 14000        True positives:  759    False positives:  623
+        False negatives: 1241   True negatives: 11377"
+
+Using a default Gaussian Naive Bayes gives you a very high recall rate but low precision and accuracy scores.
+    "GaussianNB(priors=None)
+        Accuracy: 0.27129       Precision: 0.16374      Recall: 0.99850 F1: 0.28135     F2: 0.49440
+        Total predictions: 14000        True positives: 1997    False positives: 10199  False negatives:    3   True negatives: 1801"
+
+Using GridSearch CV with a pipeline of a DecisionTree gives an acceptable precision and accuracy score but not a very high
+level of recall
+    "GridSearchCV(cv=None, error_score='raise',
+       estimator=Pipeline(steps=[('scaling', MinMaxScaler(copy=True, feature_range=(0, 1))), ('kbest', SelectKBest(k=10, score_func=<function f_classif at 0x10ca61398>)), ('dt', DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None,
+            min_impurity_split=1e-07, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            presort=False, random_state=None, splitter='best'))]),
+       fit_params={}, iid=True, n_jobs=1,
+       param_grid={'kbest__k': [1, 2, 3, 4, 5, 'all'], 'dt__min_samples_split': [11, 12, 13, 14, 15, 16]},
+       pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+       scoring=None, verbose=0)
+        Accuracy: 0.82450       Precision: 0.33036      Recall: 0.22250 F1: 0.26591     F2: 0.23804
+        Total predictions: 14000        True positives:  445    False positives:  902   False negatives: 1555   True negatives: 11098
+"
+I also wanted to try using the RandomSearchCV to see how it compared to the regular gridSearchCV and was a bit surprised
+ that the 'RandomizedSearchCV' did not have better results.
+        "RandomizedSearchCV(cv=None, error_score='raise',
+          estimator=Pipeline(steps=[('scaling', MinMaxScaler(copy=True, feature_range=(0, 1))), ('kbest', SelectKBest(k=10, score_func=<function f_classif at 0x10e374a28>)), ('kn', KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=5, p=2,
+           weights='uniform'))]),
+          fit_params={}, iid=True, n_iter=10, n_jobs=1,
+          param_distributions={'kbest__k': [1, 3, 5, 'all'], 'kn__n_neighbors': [5, 7, 9]},
+          pre_dispatch='2*n_jobs', random_state=None, refit=True,
+          return_train_score=True, scoring=None, verbose=0)
+        Accuracy: 0.85229       Precision: 0.35714      Recall: 0.04250 F1: 0.07596     F2: 0.05159
+        Total predictions: 14000        True positives:   85    False positives:  153   False negatives: 1915   True negatives: 11847
+
+
+4. What does it mean to tune the parameters of an algorithm, and what can happen if you don?t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric item: ?tune the algorithm?]
+
+4. If you don't tune the parameters of an algorithm effectively then you run the risk of both overfitting as well as not getting
+desirable results. Overfitting is a major concern when the algorithm is highly tuned as it can be too familiar with the testing set
+and thus lead to undesirable results when the algorithm is used in the field and on other datasets. On the other hand, if the
+algorithm is not properly tuned, then it won't have desirable accuracy, precision, f1, or recall scores. I attempted to tune some
+of the algorithms using both GridSearchCV and RandomizedSearchCV, but did not achieve the results that I wanted. I also
+used 'SelectKbest' with different values ranging from 3 to 'all' and the results were positive. SelectKBest worked best when
+K was equal to 5 although the dropoff to k=3 was not terribly significant. By using the 'SelectKbest' feature and the 'Pipeline'
+function I was able to pick the best features and then plug it into the Kneighbors algorithm. I also used the n_neighbors parameter
+of KNeighbors. By doing this, it assigns the number of neighbors that will vote for the class to be 3. In addition, I changed
+the weights from uniform to distance. This was done in an effort to allow points nearest to each other to dictate the weight of
+of each point. Below you will see two variations of the algorithm that I used.
+   "
+    Pipeline(steps=[('anova', SelectKBest(k=5, score_func=<function f_classif at 0x1114db050>)), ('kn', KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=3, p=2,
+           weights='distance'))])
+        Accuracy: 0.86707       Precision: 0.55040      Recall: 0.37950 F1: 0.44925     F2: 0.40463
+        Total predictions: 14000        True positives:  759    False positives:  620   False negatives: 1241   True negatives: 11380
+    "
+
+    "
+Pipeline(steps=[('anova', SelectKBest(k=3, score_func=<function f_classif at 0x111c02050>)), ('kn', KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=3, p=2,
+           weights='distance'))])
+        Accuracy: 0.84879       Precision: 0.46061      Recall: 0.34200 F1: 0.39254     F2: 0.36057
+        Total predictions: 14000        True positives:  684    False positives:  801   False negatives: 1316   True negatives: 11199
+
+    "
+5. What is validation, and what?s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric item: ?validation strategy?]
+
+Validation is done to predict how well one's predictive models perform. Validation gives an estimate of performance
+on an independent dataset, not the ones used in the training/test split. The classic mistake of cross-validation
+is getting perfect results from your predictive models due to over-fitting. This can happen if the data is not properly split up
+between a training set and a testing set. An over-fit model also has poor predictive results,
+ and might also overreact to slight changes in the data. After the algorithm parameters have
+ been set, the algorithm is run through a validation set, in order to tune the parameters.
+  The validation set acts as a buffer between the testing and training set, and also helps reduce overfitting.
+ In my project, I used some cross_validation metrics such as cross_validation score
+after getting my classifier in order to make sure that my analysis was properly validated.
+The results of my cross_validation score is
+    "('cross_val_scores', array([ 0.85185185,  0.88888889,  0.77777778,  0.88461538,  0.88461538]))
+"
+
+
+6. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm?s performance. [relevant rubric item: ?usage of evaluation metrics?]
+
+The two evaluation metrics that I paid particular attention to were the precision and recall of my results, as per the
+requirements of the project. Precision is the true positive values divided by the sum of the true positive values plus
+false positives. The recall is the true positive values divided by the sum of the true positive values plus the
+false negative values. In this case, the precision would be the proportion of Enron employees who are predicted of being POI'S
+ who are actually POI'S. Recall would be the proportion of people that are actually POI'S who are predicted as being POI'S.
